@@ -1,6 +1,6 @@
 package by.javaguru;
 
-import by.javaguru.entity.User;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -52,7 +52,6 @@ public class UserServlet extends HttpServlet {
             long id = Long.parseLong(req.getParameter("id"));
             String newName = req.getParameter("name");
             String newEmail = req.getParameter("email");
-            User updatedUser = new User(id, newName, newEmail);
             userService.updateUser(id, newName, newEmail);
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (NumberFormatException e) {
