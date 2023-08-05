@@ -1,6 +1,5 @@
 package by.javaguru;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,9 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Optional;
 
-@WebServlet("/user")
+@WebServlet("/UserServlet")
 public class UserServlet extends HttpServlet {
     private UserService userService;
     private ObjectMapper objectMapper;
@@ -22,40 +22,20 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("action");
-        if (action != null) {
-            switch (action) {
-                case "getAll":
-                    resp.setContentType("application/json");
-                    objectMapper.writeValue(resp.getWriter(), userService.getAllUsers());
-                    break;
-                case "get":
-                    long id = Long.parseLong(req.getParameter("id"));
-                    Optional<UserDto> user = userService.getUser(id);
-                    if (user.isPresent()) {
-                        resp.setContentType("application/json");
-                        objectMapper.writeValue(resp.getWriter(), user.get());
-                    } else {
-                        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
-                    }
-                    break;
-                default:
-                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
-            }
-        }
-    }
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String name = req.getParameter("name");
+        String age = req.getParameter("age");
+        String email = req.getParameter("email");
+        String login = req.getParameter("login");
+        String password = req.getParameter("password");
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            long id = Long.parseLong(req.getParameter("id"));
-            String newName = req.getParameter("name");
-            String newEmail = req.getParameter("email");
-            userService.updateUser(id, newName, newEmail);
-            resp.setStatus(HttpServletResponse.SC_OK);
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid id");
-        }
+        UserDto user = (UserDto) req.getSession().getAttribute("user");
+        user.setName(name);
+        user.setEmail(email);
+        user.setAge(Integer.parseInt(age));
+        user.setLogin(login);
+        user.setPassword(password);
+        userService.updateUser(user.getId(), name, email, Integer.parseInt(age), login, password);
+
     }
 }
