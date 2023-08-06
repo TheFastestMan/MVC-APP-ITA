@@ -1,0 +1,22 @@
+[ {
+  "id" : 1,
+  "name" : "Rail",
+  "email" : "ravilov_rail@mail.com",
+  "age" : 30,
+  "login" : "RailRail",
+  "password" : "1234"
+}, {
+  "id" : 2,
+  "name" : "Tom",
+  "email" : "Tom-Tom@mail.ru",
+  "age" : 21,
+  "login" : "Tom1",
+  "password" : "1111"
+}, {
+  "id" : 3,
+  "name" : "Ivan",
+  "email" : "Ivan_Ivan@mai.ru",
+  "age" : 44,
+  "login" : "Ivan1",
+  "password" : "2222"
+} ]

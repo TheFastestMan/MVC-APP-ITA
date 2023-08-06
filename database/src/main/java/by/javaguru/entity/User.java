@@ -1,13 +1,28 @@
 package by.javaguru.entity;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 import java.util.Objects;
 
+//todo User validation
 public class User {
     private long id;
+    @NotEmpty(message = "Name should not be empty")
+    @Size(min = 2, max = 30, message = "Name should bee between 2 and 30 characters")
     private String name;
+    @Email
+    @NotEmpty(message = "Email should not be empty")
     private String email;
+    @Min(value = 0, message = "Age should be greater than 0")
     private int age;
+    @NotEmpty(message = "Login should not be empty")
+    @Size(min = 5, max = 30, message = "Login should be between 5 and 30 characters")
     private String login;
+    @NotEmpty(message = "Password should not be empty")
+    @Size(min = 8, max = 50, message = "Password should be between 8 and 50 characters")
     private String password;
 
     public User() {
@@ -81,6 +96,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getEmail(), getAge(), getLogin(), getPassword());
+        return Objects.hash(getId(), getName(), getEmail(),
+                getAge(), getLogin(), getPassword());
     }
 }

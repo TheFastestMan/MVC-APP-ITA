@@ -1,5 +1,6 @@
 package by.javaguru;
 
+import by.javaguru.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,10 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Optional;
 
-@WebServlet("/UserServlet")
+@WebServlet("/userServlet")
 public class UserServlet extends HttpServlet {
     private UserService userService;
     private ObjectMapper objectMapper;
@@ -35,7 +34,8 @@ public class UserServlet extends HttpServlet {
         user.setAge(Integer.parseInt(age));
         user.setLogin(login);
         user.setPassword(password);
-        userService.updateUser(user.getId(), name, email, Integer.parseInt(age), login, password);
+        userService.updateUser(user.getId(), name, email, Integer.parseInt(age), login, password); //todo Check age, login, password. They could not be updated!!!
 
     }
+
 }

@@ -14,7 +14,8 @@ public class UserDao {
     private User user;
     private List<User> users;
     private final ObjectMapper objectMapper;
-    private static final String USER_JSON_PATH = "/Users/rail/IdeaProjects/SkillSpace_Enterprise/1JAKARTA_MAVEN_TOMCAT/MVC-APP-ITA/web/src/main/resources/users.json";
+    private static final String USER_JSON_PATH = "/Users/rail/IdeaProjects/SkillSpace_Enterprise/1JAKARTA_MAVEN_TOMCAT" +
+            "/MVC-APP-ITA/web/src/main/resources/users.json";
 
     public UserDao() throws IOException {
         objectMapper = new ObjectMapper();
@@ -22,7 +23,8 @@ public class UserDao {
     }
 
     public Optional<User> findById(long id) {
-        return users.stream().filter(user -> user.getId() == id).findFirst();
+        return users.stream()
+                .filter(user -> user.getId() == id).findFirst();
     }
 
     public Optional<User> findByLoginAndPassword(String login, String password) {
@@ -58,7 +60,6 @@ public class UserDao {
         File file = new File(USER_JSON_PATH);
         if (file.exists()) {
             return new ArrayList<>(Arrays.asList(objectMapper.readValue(file, User[].class)));
-
         } else {
             return new ArrayList<>();
         }
