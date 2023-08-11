@@ -19,7 +19,7 @@ public class ProductDeleteServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         try {
-            productService = new ProductService(); // initialize productService when servlet starts
+            productService = new ProductService();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -43,7 +43,7 @@ public class ProductDeleteServlet extends HttpServlet {
             } else {
                 req.setAttribute("errorMessage", "Product not found.");
             }
-            doGet(req, resp); // Refresh the list and show appropriate messages
+            doGet(req, resp);
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("Failed to delete product. Internal error.");
