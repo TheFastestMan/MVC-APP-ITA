@@ -24,11 +24,10 @@ public class AuthenticationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
-        Optional<UserDto> userOptional = userService.getUserByLoginAndPassword(login, password);
+        Long id = Long.valueOf(req.getParameter("id"));
+        Optional<UserDto> userOptional = userService.getUserById(id);
 
-        if (login != null && password != null && userOptional.isPresent()) {
+        if (id != null && userOptional.isPresent()) {
             UserDto user = userOptional.get();
             req.getSession().setAttribute("user", user);
             resp.sendRedirect("/menu.html");

@@ -13,11 +13,9 @@ import java.io.IOException;
 @WebServlet("/userServlet")
 public class UserServlet extends HttpServlet {
     private UserService userService;
-    private ObjectMapper objectMapper;
 
     public UserServlet() throws IOException {
         userService = new UserService();
-        objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -34,7 +32,7 @@ public class UserServlet extends HttpServlet {
         user.setAge(Integer.parseInt(age));
         user.setLogin(login);
         user.setPassword(password);
-        userService.updateUser(user.getId(), name, email, Integer.parseInt(age), login, password); //todo Check age, login, password. They could not be updated!!!
+        userService.updateUser(new User(name, email, age, login, password)); //todo Check age, login, password. They could not be updated!!!
 
     }
 

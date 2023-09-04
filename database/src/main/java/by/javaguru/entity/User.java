@@ -25,7 +25,7 @@ public class User {
     @Size(min = 8, max = 50, message = "Password should be between 8 and 50 characters")
     private String password;
 
-    public User() {
+    public User(String name, String email, String age, String login, String password) {
     }
 
     public User(long id, String name, String email, int age, String login, String password) {

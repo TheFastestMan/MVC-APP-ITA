@@ -1,69 +1,129 @@
 package by.javaguru.dao;
 
 import by.javaguru.entity.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import by.javaguru.exception.DaoException;
+import by.javaguru.util.ConnectionManager;
 
-import java.io.File;
-import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class UserDao {
-    private User user;
-    private List<User> users;
-    private final ObjectMapper objectMapper;
-    private static final String USER_JSON_PATH = "/Users/rail/IdeaProjects/SkillSpace_Enterprise/1JAKARTA_MAVEN_TOMCAT" +
-            "/MVC-APP-ITA/web/src/main/resources/users.json";
 
-    public UserDao() throws IOException {
-        objectMapper = new ObjectMapper();
-        users = loadData();
-    }
+    private static final String SAVE_SQL = """
+            INSERT INTO users (  
+              username, email, age, login, password
+            ) 
+            values 
+            (?,?,?,?,?);
+            """;
 
-    public Optional<User> findById(long id) {
-        return users.stream()
-                .filter(user -> user.getId() == id).findFirst();
-    }
+    private static final String UPDATE_SQL = """
+            UPDATE users
+             SET username = ?, email = ?, age = ?, login = ?, password = ?
+            WHERE id = ?
+            """;
 
-    public Optional<User> findByLoginAndPassword(String login, String password) {
-        return users.stream()
-                .filter(user -> user.getLogin().equals(login) && user.getPassword().equals(password))
-                .findFirst();
-    }
+    private static final String FIND_ALL_SQL = """
+            SELECT id, username, email, age, login, password FROM users
+            """;
+    private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
+            WHERE id = ?;
+            """;
 
-    public void update(long id, User updatedUser) throws IOException {
-        User user = findById(id).orElse(null);
-        if (user != null) {
-            user.setName(updatedUser.getName());
-            user.setEmail(updatedUser.getEmail());
-            saveData();
+
+    public boolean update(User user) {
+
+        try (var connection = ConnectionManager.open();
+             var prepareStatement = connection.prepareStatement(UPDATE_SQL)) {
+
+            prepareStatement.setString(1, user.getName());
+            prepareStatement.setString(2, user.getEmail());
+            prepareStatement.setInt(3, user.getAge());
+            prepareStatement.setString(4, user.getLogin());
+            prepareStatement.setString(5, user.getPassword());
+
+            prepareStatement.setLong(6, user.getId());
+
+            return prepareStatement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
-    public List<User> findAllUsers() {
-        return new ArrayList<>(users);
-    }
 
-    private void saveData() throws IOException {
-        objectMapper.writerWithDefaultPrettyPrinter()
-                .writeValue(new File(USER_JSON_PATH), users);
-    }
+    public List<User> findAll() {
 
-    public void createNewUser(User user) throws IOException {
-        users.add(user);
-        saveData();
-    }
+        try (var connection = ConnectionManager.open();
+             var prepareStatement = connection.prepareStatement(FIND_ALL_SQL)) {
 
-    private List<User> loadData() throws IOException {
-        File file = new File(USER_JSON_PATH);
-        if (file.exists()) {
-            return new ArrayList<>(Arrays.asList(objectMapper.readValue(file, User[].class)));
-        } else {
-            return new ArrayList<>();
+            List<User> users = new ArrayList<>();
+
+            var result = prepareStatement.executeQuery();
+
+            while (result.next())
+                users.add(buildUser(result));
+            return users;
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
+    private static User buildUser(ResultSet result) throws SQLException {
+        return new User(result.getLong("id"),
+                result.getString("username"),
+                result.getString("email"),
+                result.getInt("age"),
+                result.getString("login"),
+                result.getString("password"));
+    }
+
+
+    public Optional<User> findById(Long id) {
+        try (var connection = ConnectionManager.open();
+             var prepareStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            prepareStatement.setLong(1, id);
+
+            User user = null;
+            var result = prepareStatement.executeQuery();
+
+            while (result.next()) {
+                user = buildUser(result);
+            }
+            return Optional.ofNullable(user);
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
+
+    public User save(User user) {
+
+        try (var connection = ConnectionManager.open();
+             var prepareStatement = connection.prepareStatement(SAVE_SQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
+
+            prepareStatement.setString(1, user.getName());
+            prepareStatement.setString(2, user.getEmail());
+            prepareStatement.setInt(3, user.getAge());
+            prepareStatement.setString(4, user.getLogin());
+            prepareStatement.setString(5, user.getPassword());
+
+            prepareStatement.executeUpdate();
+
+            var keys = prepareStatement.getGeneratedKeys();
+
+            if (keys.next())
+                user.setId(keys.getLong("id"));
+            return user;
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
 }
 //

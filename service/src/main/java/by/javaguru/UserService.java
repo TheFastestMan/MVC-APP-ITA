@@ -14,21 +14,21 @@ public class UserService {
         userDao = new UserDao();
     }
 
-    public void updateUser(long id, String name, String email, int age, String login, String password) throws IOException {
-        userDao.update(id, new User(id, name, email, age, login, password));
+    public void updateUser(User user) throws IOException {
+        userDao.update(user);
     }
 
 
     public void addNewUser(String name, String age, String email, String login, String password) throws IOException {
-        List<User> users = userDao.findAllUsers();
+        List<User> users = userDao.findAll();
         Long maxId = users.stream().map(User::getId).max(Long::compareTo).orElse(0L);
         User user = new User(maxId + 1, name, email, Integer.parseInt(age), login, password);
 
-        userDao.createNewUser(user);
+        userDao.save(user);
     }
 
-    public Optional<UserDto> getUserByLoginAndPassword(String login, String password) {
-        return userDao.findByLoginAndPassword(login, password)
+    public Optional<UserDto> getUserById(Long id) {
+        return userDao.findById(id)
                 .map(user -> new UserDto(user.getId(), user.getName(), user.getEmail(),
                         user.getAge(), user.getLogin(), user.getPassword()));
     }
