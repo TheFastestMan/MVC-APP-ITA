@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="by.javaguru.entity.Product" %>
 <%@ page import="java.util.List" %>
@@ -15,9 +14,10 @@
     <select name="productName" id="productName">
         <%
             List<Product> products = (List<Product>) request.getAttribute("products");
-            for(Product product : products) {
+            for (Product product : products) {
         %>
-        <option value="<%= product.getName() %>"><%= product.getName() %></option>
+        <option value="<%= product.getName() %>"><%= product.getName() %>
+        </option>
         <% } %>
     </select>
 
@@ -29,14 +29,16 @@
 <%
     String successMessage = (String) request.getAttribute("successMessage");
     String errorMessage = (String) request.getAttribute("errorMessage");
-    if(successMessage != null) {
+    if (successMessage != null) {
 %>
-<p style="color: green;"><%= successMessage %></p>
-<%  }
-    if(errorMessage != null) {
+<p style="color: green;"><%= successMessage %>
+</p>
+<% }
+    if (errorMessage != null) {
 %>
-<p style="color: red;"><%= errorMessage %></p>
-<%  } %>
+<p style="color: red;"><%= errorMessage %>
+</p>
+<% } %>
 
 </body>
 </html>
