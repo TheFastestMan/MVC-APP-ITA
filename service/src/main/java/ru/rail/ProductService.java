@@ -24,7 +24,7 @@ public class ProductService {
     }
 
     public List<Product> getAllProducts() {
-        return productDao.findAll().stream().map(product -> new ProductDto(product.getName(), product.getQuantity())
+        return productDao.findAll().stream().map(product -> new Product(product.getName(), product.getQuantity())
         ).collect(Collectors.toList());
     }
 }
