@@ -19,10 +19,10 @@ public class UserService {
     }
 
 
-    public void addNewUser(String name, String age, String email, String login, String password) throws IOException {
+    public void addNewUser(String name, Integer age, String email, String login, String password) throws IOException {
         List<User> users = userDao.findAll();
         Long maxId = users.stream().map(User::getId).max(Long::compareTo).orElse(0L);
-        User user = new User(maxId + 1, name, email, Integer.parseInt(age), login, password);
+        User user = new User(maxId + 1, name, email, age, login, password);
 
         userDao.save(user);
     }

@@ -24,7 +24,7 @@ public class RegistrationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Long id = Long.valueOf(req.getParameter("id"));
         String name = req.getParameter("name");
-        String age = req.getParameter("age");
+        Integer age = Integer.valueOf(req.getParameter("age"));
         String email = req.getParameter("email");
         String login = req.getParameter("login");
         String password = req.getParameter("password");
