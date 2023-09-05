@@ -99,4 +99,16 @@ public class User {
         return Objects.hash(getId(), getName(), getEmail(),
                 getAge(), getLogin(), getPassword());
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

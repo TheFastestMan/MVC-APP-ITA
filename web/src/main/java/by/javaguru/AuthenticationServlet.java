@@ -27,7 +27,7 @@ public class AuthenticationServlet extends HttpServlet {
         Long id = Long.valueOf(req.getParameter("id"));
         Optional<UserDto> userOptional = userService.getUserById(id);
 
-        if (id != null && userOptional.isPresent()) {
+        if (userOptional.isPresent()) {
             UserDto user = userOptional.get();
             req.getSession().setAttribute("user", user);
             resp.sendRedirect("/menu.html");
