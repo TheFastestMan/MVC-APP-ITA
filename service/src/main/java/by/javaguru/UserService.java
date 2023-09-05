@@ -33,4 +33,10 @@ public class UserService {
                         user.getAge(), user.getLogin(), user.getPassword()));
     }
 
+    public Optional<UserDto> getUserByLoginAndPassword(String login, String password) {
+        return userDao.findByLoginAndPassword(login, password)
+                .map(user -> new UserDto(user.getId(), user.getName(), user.getEmail(),
+                        user.getAge(), user.getLogin(), user.getPassword()));
+    }
+
 }

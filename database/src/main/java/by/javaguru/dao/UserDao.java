@@ -34,6 +34,31 @@ public class UserDao {
             WHERE id = ?;
             """;
 
+    private static final String FIND_BY_LOGIN_PASSWORD = """
+            SELECT id, username, email, age, login, password FROM users
+            WHERE login = ? and  password = ?;
+            """;
+
+    public Optional<User> findByLoginAndPassword(String login, String password) {
+
+        try (var connection = ConnectionManager.open();
+             var prepareStatement = connection.prepareStatement(FIND_BY_LOGIN_PASSWORD)) {
+
+            prepareStatement.setString(1, login);
+            prepareStatement.setString(2, password);
+
+            User user = null;
+            var result = prepareStatement.executeQuery();
+
+            while (result.next()) {
+                user = buildUser(result);
+            }
+            return Optional.ofNullable(user);
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
 
     public boolean update(User user) {
 
