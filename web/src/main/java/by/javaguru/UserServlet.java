@@ -1,7 +1,6 @@
 package by.javaguru;
 
 import by.javaguru.entity.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/userServlet")
+@WebServlet("/updateServlet")
 public class UserServlet extends HttpServlet {
     private UserService userService;
 
@@ -20,20 +19,35 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getParameter("name");
-        String age = req.getParameter("age");
-        String email = req.getParameter("email");
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
+        // Parse request parameters
+        String userId = req.getParameter("id");
+        String updatedUsername = req.getParameter("name");
+        String updatedEmail = req.getParameter("email");
+        String updatedAge = req.getParameter("age");
+        String updatedLogin = req.getParameter("login");
+        String updatedPassword = req.getParameter("password");
 
-        UserDto user = (UserDto) req.getSession().getAttribute("user");
-        user.setName(name);
-        user.setEmail(email);
-        user.setAge(Integer.parseInt(age));
-        user.setLogin(login);
-        user.setPassword(password);
-        userService.updateUser(new User(name, email, age, login, password)); //todo Check age, login, password. They could not be updated!!!
 
+        // Create an ItemDTO
+        UserDto userDto = new UserDto();
+        userDto.setId(Long.valueOf(userId));
+        userDto.setName(updatedUsername);
+        userDto.setEmail(updatedEmail);
+        userDto.setAge(Integer.parseInt(updatedAge));
+        userDto.setLogin(updatedLogin);
+        userDto.setPassword(updatedPassword);
+
+
+        // Use the service to update the item
+        UserService userService = new UserService();
+        boolean success = userService.updateUser(userDto);
+
+        if (success) {
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getWriter().write("Item updated successfully.");
+        } else {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("Item update failed.");
+        }
     }
-
 }

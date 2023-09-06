@@ -15,7 +15,7 @@ public class UserDao {
 
     private static final String SAVE_SQL = """
             INSERT INTO users (  
-              username, email, age, login, password
+              name, email, age, login, password
             ) 
             values 
             (?,?,?,?,?);
@@ -23,19 +23,19 @@ public class UserDao {
 
     private static final String UPDATE_SQL = """
             UPDATE users
-             SET username = ?, email = ?, age = ?, login = ?, password = ?
+             SET name = ?, email = ?, age = ?, login = ?, password = ?
             WHERE id = ?
             """;
 
     private static final String FIND_ALL_SQL = """
-            SELECT id, username, email, age, login, password FROM users
+            SELECT id, name, email, age, login, password FROM users
             """;
     private static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
             WHERE id = ?;
             """;
 
     private static final String FIND_BY_LOGIN_PASSWORD = """
-            SELECT id, username, email, age, login, password FROM users
+            SELECT id, name, email, age, login, password FROM users
             WHERE login = ? and  password = ?;
             """;
 
@@ -100,7 +100,7 @@ public class UserDao {
 
     private static User buildUser(ResultSet result) throws SQLException {
         return new User(result.getLong("id"),
-                result.getString("username"),
+                result.getString("name"),
                 result.getString("email"),
                 result.getInt("age"),
                 result.getString("login"),
