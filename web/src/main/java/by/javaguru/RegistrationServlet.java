@@ -22,14 +22,13 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String id = req.getParameter("id");
         String name = req.getParameter("name");
         String age = req.getParameter("age");
         String email = req.getParameter("email");
         String login = req.getParameter("login");
         String password = req.getParameter("password");
 
-        if (login != null && userService.getUserById(Long.valueOf(id)).isEmpty()) {
+        if (login != null && userService.getUserByLoginAndPassword(login, password).isEmpty()) {
             userService.addNewUser(name, Integer.valueOf(age), email, login, password);
             resp.sendRedirect("/menu.html");
         } else {
